@@ -1,9 +1,23 @@
 # -*- coding: utf-8 -*-
-from pyrevit import revit, DB, forms, script
-import math
+"""
+DependentSplit (視圖矩陣分割器)
+Author: Jerry / Antigravity
+Version: v1.0
 
-logger = script.get_logger()
-doc = revit.doc
+Description / 功能簡介:
+Matrix-based dependent view cropping with automatic sheet generation and template application.
+依據網格交叉點精準裁切從屬視圖，並自動生成對應圖紙與套用視圖樣板。
+
+Key Features / 關鍵功能:
+- Grid-based Matrix Detection (自動網格矩陣偵測)
+- Automatic Sheet & Viewport Creation (自動生成圖紙與視埠)
+- View Template Application (批量套用視圖樣板)
+
+How to Use / 使用說明:
+1. Select primary parent views (選擇母視圖)
+2. Choose a View Template (選擇視圖樣板)
+3. Define Grid range and Offset (定義網格範圍與外擴值)
+"""
 
 def get_sorted_grids():
     """ 抓取所有網格，並依據幾何座標分類與排序 """

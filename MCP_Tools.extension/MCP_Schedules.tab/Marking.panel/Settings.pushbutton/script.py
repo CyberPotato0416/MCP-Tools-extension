@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Settings for MCP Marking."""
+"""
+Mark Settings (標註參數設定)
+Author: MCP / Jerry
+Version: v1.0
 
-__title__ = "Mark Settings"
-__author__ = "MCP"
+Description / 功能簡介:
+Configuration UI for the 'Pick Mark' tool. Define prefix, padding, starting index, and suffix.
+『元素手動標註』工具的配置介面。可設定標記前綴、補位長度、起始序號與後綴。
+"""
 
 import os
 from pyrevit import forms, script

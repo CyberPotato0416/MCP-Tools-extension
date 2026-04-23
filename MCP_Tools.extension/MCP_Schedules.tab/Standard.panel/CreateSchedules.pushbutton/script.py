@@ -1,8 +1,23 @@
 # -*- coding: utf-8 -*-
-"""Create standard MEP Procurement schedules based on MCP protocol V1.1."""
+"""
+Create Schedules (建立標準明細表)
+Author: MCP / Jerry
+Version: v1.0
 
-__title__ = '建立標準\n明細表'
-__author__ = 'MCP'
+Description / 功能簡介:
+Batch creates standard MEP Procurement schedules based on the MCP Project Protocol V1.1.
+依據 MCP 專案協議 V1.1，一鍵批次建立標準機電採購明細表。
+
+Key Features / 關鍵功能:
+- Automated Schedule Generation (自動化明細表生成)
+- Multi-Category Support (支援管材、管配件、管附件)
+- Protocol Field Alignment (自動對齊協議欄位與參數)
+
+How to Use / 使用說明:
+1. Ensure project parameters are loaded (確保專案參數已載入)
+2. Run the tool to generate 3 standard schedules (執行工具生成 3 份標準明細表)
+3. Review results in the Schedule/Quantities browser (於明細表瀏覽器中查看結果)
+"""
 
 from Autodesk.Revit import DB
 from pyrevit import revit, forms

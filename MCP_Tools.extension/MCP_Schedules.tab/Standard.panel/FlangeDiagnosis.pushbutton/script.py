@@ -1,7 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-自動法蘭對接診斷工具 (Flange Diagnosis)
-目標：於選取之一根直管，先往南複製20cm，然後在複製管兩側自動接上背對背法蘭，並輸出除錯表。
+Flange Diagnosis (法蘭對接診斷箱)
+Author: Jerry / Antigravity
+Version: v1.0
+
+Description / 功能簡介:
+Diagnostic tool for flange orientation and connectivity. Tests alignment and vector logic on a trial pipe.
+法蘭對接與方向診斷工具，透過複製測試管線來驗證法蘭的空間位移、旋轉向量與拓樸連接狀態。
+
+Key Features / 關鍵功能:
+- Geometric Orientation Analysis (幾何朝向分析)
+- Connectivity Topology Test (拓樸連接測試)
+- Real-time Diagnostic Report (即時生成 HTML/MD 診斷報告)
+
+How to Use / 使用說明:
+1. Select a short horizontal pipe (選擇一根短直管)
+2. Run the tool to spawn a test case 20cm south (執行後往南 20cm 生成測試案例)
+3. Review the Output window for technical details (查看輸出視窗了解技術細節)
 """
 from pyrevit import revit, DB, forms, script
 import math

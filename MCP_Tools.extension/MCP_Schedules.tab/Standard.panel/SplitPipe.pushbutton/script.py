@@ -1,8 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-UPW 管線 Delete & Redraw (砍掉重練) 工具
-作者: Antigravity / Jerry
-說明: 不改變原管線頭尾邊界！在總長度內每隔滿管(5m)打斷一次，並安插背對背法蘭間隙。
+SplitPipe (切管大師)
+Author: Jerry / Antigravity
+Version: v1.0 [WIP - ⚠️ 目前功能尚不可用 / Work In Progress]
+
+Description / 功能簡介:
+Full-cycle pipe replacement tool (Delete & Redraw) designed for 5m modules with back-to-back flanges.
+「砍掉重練」式管線替換工具，旨在生成精準的 5 米模組並自動插入背對背法蘭間隙。
+
+Key Features / 關鍵功能:
+- Precision Vector Calculation (高精度方向向量計算)
+- Back-to-Back Flange Insertion (自動安插背對背法蘭)
+- Original Connectivity Restoration (嘗試恢復原始管線首尾連接)
+
+Current Status / 目前狀態:
+⚠️ UNDER DEVELOPMENT. Logic is being stabilized. Do not use in production.
+⚠️ 開發中。核心邏輯（尤其是系統接頭對接）正在優化中，請勿用於專案生產環境。
 """
 from pyrevit import revit, DB, forms, script
 import math

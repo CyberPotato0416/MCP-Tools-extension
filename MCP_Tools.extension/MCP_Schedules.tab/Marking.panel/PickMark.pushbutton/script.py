@@ -1,8 +1,23 @@
 # -*- coding: utf-8 -*-
-"""按下後，標註模式生效，按下ESC可退出。 (Pick and Mark Elements)"""
+"""
+Pick Mark (元素手動標註)
+Author: MCP / Jerry
+Version: v1.0
 
-__title__ = "Pick Mark"
-__author__ = "MCP"
+Description / 功能簡介:
+Incremental marking of elements by manual picking. Supports custom prefix, padding, and automatic indexing.
+透過點選元件進行遞增式標註，支援自定義前綴、補位與自動跳號。
+
+Key Features / 關鍵功能:
+- Pick and Mark Workflow (點選即標註工作流)
+- Auto-Increment Index (自動累加序列號)
+- Configurable Prefix and Suffix (靈活配置前綴與後綴)
+
+How to Use / 使用說明:
+1. Click the button to enter picking mode (點擊按鈕進入選取模式)
+2. Pick elements in sequence (依序點選元件)
+3. Press ESC to exit and save progress (按 ESC 鍵退出並儲存進度)
+"""
 
 import clr
 import ctypes

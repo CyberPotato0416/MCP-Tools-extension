@@ -1,7 +1,18 @@
 # -*- coding: utf-8 -*-
-from pyrevit import revit, DB, forms
-import json
-import os
+"""
+Dump Flange Info (法蘭數據導出)
+Author: Jerry / Antigravity
+Version: v1.0
+
+Description / 功能簡介:
+Exports geometric and connector data of specific flange instances to a JSON file for analysis.
+將特定法蘭實例的幾何資訊與接頭數據導出為 JSON 檔案，供外部分析或 AI 建模參考。
+
+Key Features / 關鍵功能:
+- UniqueId & Family Metadata Extraction (UID 與族群元數據提取)
+- Connector Origin & Vector Mapping (接頭原點與向量映射)
+- JSON Export for External Logic (支持 JSON 格式導出)
+"""
 
 doc = revit.doc
 uidoc = revit.uidoc

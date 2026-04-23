@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-測試腳本：往南 20cm 複製選取的管線與法蘭，並自動修改為 5m 直管加兩側法蘭。
+TestPipe Sandbox (複製測試沙盒)
+Author: Jerry / Antigravity
+Version: v1.0
+
+Description / 功能簡介:
+Spawns a [Flange + 5m Pipe + Flange] test assembly for geometric validation.
+快速生成一組 [法蘭 + 5m 直管 + 對向法蘭] 的測試組合，用於驗證幾何旋轉與位移算法。
+
+Key Features / 關鍵功能:
+- Automated Assembly Cloning (自動化組合複製)
+- Length Standardization (管長自動標記化)
+- 180-degree Flip Logic (法蘭自動對夾翻轉邏輯)
 """
 from pyrevit import revit, DB, forms, script
 

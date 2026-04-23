@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+"""
+Quick Pipe Settings (常用管材設定)
+Author: Jerry
+Version: v1.0
+
+Description / 功能簡介:
+Configuration UI for favorite pipe types. Sets the top 5 pipe types for quick ribbon access.
+常用管材類型的配置介面。可設定 5 個最常用的管材類型，並直接更新於功能區按鈕上。
+"""
 from pyrevit import revit, DB, forms
 import os
 import sys
