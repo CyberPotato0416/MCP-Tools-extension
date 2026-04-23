@@ -1,0 +1,15 @@
+{
+    "selected_views": [
+        "平面圖_C2_L20_WUPW_分區"
+    ],
+    "y_step": 2,
+    "x_start": "U1",
+    "offset": "1000",
+    "sh_num": "C2-B02-D-WUPW-",
+    "sh_name": "平面分圖",
+    "selected_template": "出圖-UPW-CUB-L20-全區",
+    "y_start": "UA",
+    "y_end": "UE",
+    "x_step": 2,
+    "x_end": "U5"
+}

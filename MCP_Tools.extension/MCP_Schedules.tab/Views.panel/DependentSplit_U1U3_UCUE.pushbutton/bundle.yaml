@@ -1,0 +1,6 @@
+title: "Dependent Split U1-U3 UC-UE"
+tooltip: "你要的U1到U3，UC到UE單區切圖"
+author: "MCP Tools"
+type: "pushbutton"
+icon: "split"
+description: "指定視圖名稱 平面圖_C2_L10_WUPW_分區，從U1～U3、UC～UE切出獨立視圖。"

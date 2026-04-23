@@ -20,20 +20,29 @@ How to Use / 使用說明:
 """
 
 def get_sorted_grids():
-    """ 抓取所有網格，並依據幾何座標分類與排序 """
+    """ 
+    Grab all grids and classify them into X and Y groups based on geometry, then sort them by coordinate.
+    抓取所有網格，並依幾何幾何座標分類為 X/Y 組，隨後進行排序。
+    """
     all_grids = DB.FilteredElementCollector(doc).OfClass(DB.Grid).ToElements()
     x_grids, y_grids = [], []
     for g in all_grids:
         curve = g.Curve
         if not isinstance(curve, DB.Line): continue
         direction = curve.Direction.Normalize()
+        # If line is vertical (X-coordinate constant), it defines an X-position (column boundary)
         if abs(direction.X) < 0.001: x_grids.append(g)
+        # If line is horizontal (Y-coordinate constant), it defines a Y-position (row boundary)
         elif abs(direction.Y) < 0.001: y_grids.append(g)
+    
+    # Sort X-grids by X-coordinate (Left to Right) / 按 X 座標排序（由左至右）
     x_grids.sort(key=lambda g: g.Curve.GetEndPoint(0).X)
+    # Sort Y-grids by Y-coordinate (Bottom to Top) / 按 Y 座標排序（由下至上）
     y_grids.sort(key=lambda g: g.Curve.GetEndPoint(0).Y)
     return x_grids, y_grids
 
 def is_primary_view(view):
+    """ Check if the view is a primary view (not dependent) / 檢查視圖是否為母視圖（非從屬視圖） """
     if hasattr(view, "GetPrimaryViewId"):
         return view.GetPrimaryViewId() == DB.ElementId.InvalidElementId
     return True
@@ -104,12 +113,13 @@ def main():
 
     tb = DB.FilteredElementCollector(doc).OfCategory(DB.BuiltInCategory.OST_TitleBlocks).WhereElementIsElementType().FirstElementId()
     
-    # 5. 批次執行
+    # 5. Batch Execution / 批次執行
     with revit.Transaction("Batch Matrix Split with Template"):
         for v_idx, parent_view in enumerate(selected_views):
             for r in range(len(split_y) - 1):
                 for c in range(len(split_x) - 1):
                     try:
+                        # Define Crop BoundingBox based on grid crossings / 依據網格交點定義裁切邊界框
                         v1x, v2x = get_x(split_x[c]), get_x(split_x[c+1])
                         v1y, v2y = get_y(split_y[r]), get_y(split_y[r+1])
                         
@@ -117,23 +127,26 @@ def main():
                         bbox.Min = DB.XYZ(min(v1x,v2x)-offset, min(v1y,v2y)-offset, -1)
                         bbox.Max = DB.XYZ(max(v1x,v2x)+offset, max(v1y,v2y)+offset, 1)
                         
+                        # Create Dependent View / 建立從屬視圖
                         new_id = parent_view.Duplicate(DB.ViewDuplicateOption.AsDependent)
                         nv = doc.GetElement(new_id)
                         nv.Name = "{}-R{}-C{}".format(parent_view.Name, r+1, c+1)
                         nv.CropBox = bbox
                         nv.CropBoxActive = True
                         
-                        # 套用樣板
+                        # Apply View Template / 套用視圖樣板
                         if template_id != DB.ElementId.InvalidElementId:
                             nv.ViewTemplateId = template_id
                         
+                        # Create corresponding Sheet / 建立對應圖紙
                         if tb:
                             sheet = DB.ViewSheet.Create(doc, tb)
                             sheet.SheetNumber = "{}-V{}-R{}-C{}".format(sh_num, v_idx+1, r+1, c+1)
                             sheet.Name = "{} ({}-{})".format(sh_name, r+1, c+1)
+                            # Place Viewport on Sheet (Center offset) / 在圖紙上建立視埠 (偏移量調整)
                             DB.Viewport.Create(doc, sheet.Id, nv.Id, DB.XYZ(1.38, 0.97, 0))
                     except: pass
-    forms.alert("樣板批次分割完成！")
+    forms.alert("樣板批次分割完成！ (Batch Matrix Split Completed)")
 
 if __name__ == "__main__":
     main()
