@@ -2,22 +2,23 @@
 """
 DependentSplit (視圖矩陣分割器)
 Author: Jerry / Antigravity
-Version: v1.0
+Version: v1.1 (Fixed Imports & Improved UX)
 
 Description / 功能簡介:
-Matrix-based dependent view cropping with automatic sheet generation and template application.
-依據網格交叉點精準裁切從屬視圖，並自動生成對應圖紙與套用視圖樣板。
-
-Key Features / 關鍵功能:
-- Grid-based Matrix Detection (自動網格矩陣偵測)
-- Automatic Sheet & Viewport Creation (自動生成圖紙與視埠)
-- View Template Application (批量套用視圖樣板)
-
-How to Use / 使用說明:
-1. Select primary parent views (選擇母視圖)
-2. Choose a View Template (選擇視圖樣板)
-3. Define Grid range and Offset (定義網格範圍與外擴值)
+依據指定網格邊界（如 1~5 軸、A~E 軸）自動將大型母視圖分割成矩陣狀的從屬視圖 (Dependent Views)。
+每個分割出來的小視圖會自動依序：
+1. 套用選定的視圖樣板。
+2. 建立專屬的新圖紙 (Sheet)。
+3. 將視圖放置在圖紙中心。
 """
+
+import os
+from Autodesk.Revit.DB import *
+import Autodesk.Revit.DB as DB
+from pyrevit import revit, forms
+
+# Define document variable
+doc = revit.doc
 
 def get_sorted_grids():
     """ 
@@ -48,24 +49,52 @@ def is_primary_view(view):
     return True
 
 def main():
-    # 1. 視圖多選
-    all_views_col = DB.FilteredElementCollector(doc).OfClass(DB.ViewPlan).WhereElementIsNotElementType()
+    # 0. 功能前導說明 / Guided Intro
+    forms.alert(
+        "【視圖矩陣分割器】\n\n"
+        "此工具將引導您執行以下操作：\n"
+        "1. 選擇母視圖\n"
+        "2. 選擇樣板（將會自動套用至所有生成的分割視圖）\n"
+        "3. 設定分割範圍（網格座標）\n"
+        "4. 自動建立圖紙與排版\n\n"
+        "若準備好了請點選 OK 開始。",
+        title="DependentSplit 使用引導"
+    )
+
+    # 1. 視圖多選 (加入預載邏輯)
+    active_view = doc.ActiveView
+    all_views_col = FilteredElementCollector(doc).OfClass(ViewPlan).WhereElementIsNotElementType()
     view_list = [v for v in all_views_col if not v.IsTemplate and is_primary_view(v)]
     view_list.sort(key=lambda x: x.Name)
-    selected_views = forms.SelectFromList.show(
-        view_list, name_attr='Name', title='[1/5] 勾選母視圖', multiselect=True
-    )
-    if not selected_views: return
+    
+    # 建立彈框實例以支援預先勾選
+    view_form = forms.SelectFromList(view_list, name_attr='Name', title='[1/5] 勾選母視圖', multiselect=True)
+    
+    # 如果當前視圖在清單內，自動勾選
+    if active_view in view_list:
+        view_form.checked_elements = [active_view]
+    
+    if not view_form.show(): return
+    selected_views = view_form.selected_elements
 
-    # 2. 視圖樣板選擇 (新增 Step)
-    all_templates = DB.FilteredElementCollector(doc).OfClass(DB.ViewPlan).ToElements()
+    # 2. 視圖樣板選擇 (加入預載邏輯)
+    all_templates = FilteredElementCollector(doc).OfClass(ViewPlan).ToElements()
     template_list = [t for t in all_templates if t.IsTemplate]
     template_list.sort(key=lambda x: x.Name)
     
-    selected_template = forms.SelectFromList.show(
-        template_list, name_attr='Name', title='[2/5] 選擇視圖樣板 (可點取消視同不套用)'
-    )
-    template_id = selected_template.Id if selected_template else DB.ElementId.InvalidElementId
+    # 偵測樣板預選：取第一個母視圖的樣板
+    active_template_id = selected_views[0].ViewTemplateId if selected_views else ElementId.InvalidElementId
+    active_template = doc.GetElement(active_template_id) if active_template_id != ElementId.InvalidElementId else None
+
+    # 建立彈框實例
+    temp_form = forms.SelectFromList(template_list, name_attr='Name', title='[2/5] 選擇視圖樣板 (可點取消視同不套用)')
+    
+    # 如果母視圖有樣板，自動預選
+    if active_template:
+        temp_form.selected_elements = [active_template]
+    
+    selected_template = temp_form.show()
+    template_id = selected_template.Id if selected_template else ElementId.InvalidElementId
 
     # 3. 各別參數輸入 (穩定版)
     out = forms.ask_for_string(default='1000', title="[3/5] 外擴值 Offset (mm)")

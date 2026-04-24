@@ -1,69 +1,93 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="樣板樓層管理工具" Width="420" SizeToContent="Height"
-        ShowInTaskbar="False" WindowStartupLocation="CenterScreen" Background="#F5F5F5">
-    <Border Padding="15">
-        <StackPanel>
-            <TextBlock Text="視圖樣板動態白名單管理" FontSize="16" FontWeight="Bold" Margin="0,0,0,12" Foreground="#333333"/>
+        Title="樣板樓層管理工具" Height="680" Width="450" MinHeight="500" MinWidth="400"
+        WindowStartupLocation="CenterScreen" Topmost="True"
+        Background="#F5F5F5" ResizeMode="CanResizeWithGrip">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Title -->
+            <RowDefinition Height="*"/>    <!-- Tabs Content -->
+            <RowDefinition Height="Auto"/> <!-- Buttons -->
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="視圖樣板動態白名單管理" FontSize="18" FontWeight="Bold" Margin="0,0,0,10" Foreground="#333333" Grid.Row="0"/>
 
-            <TabControl x:Name="MainTabControl" Background="White" BorderBrush="#CCCCCC">
-                <!-- TAB 1 -->
-                <TabItem Header=" 樣板 A ">
-                    <StackPanel Margin="10">
-                        <CheckBox x:Name="Tab1_Enabled" Content="啟用此樣板過濾" Margin="0,5,0,10" FontWeight="Bold"/>
-                        <Label Content="選擇視圖樣板:" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
-                        <ComboBox x:Name="Tab1_TemplateCombo" DisplayMemberPath="Name" Height="26" Margin="0,0,0,10" BorderBrush="#CCCCCC"/>
-                        <Label Content="保留顯示樓層 (白名單):" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
-                        <ListBox x:Name="Tab1_LevelList" Height="180" BorderBrush="#CCCCCC" Background="White">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="2"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </TabItem>
-                <!-- TAB 2 -->
-                <TabItem Header=" 樣板 B ">
-                    <StackPanel Margin="10">
-                        <CheckBox x:Name="Tab2_Enabled" Content="啟用此樣板過濾" Margin="0,5,0,10" FontWeight="Bold"/>
-                        <Label Content="選擇視圖樣板:" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
-                        <ComboBox x:Name="Tab2_TemplateCombo" DisplayMemberPath="Name" Height="26" Margin="0,0,0,10" BorderBrush="#CCCCCC"/>
-                        <Label Content="保留顯示樓層 (白名單):" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
-                        <ListBox x:Name="Tab2_LevelList" Height="180" BorderBrush="#CCCCCC" Background="White">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="2"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </TabItem>
-                <!-- TAB 3 -->
-                <TabItem Header=" 樣板 C ">
-                    <StackPanel Margin="10">
-                        <CheckBox x:Name="Tab3_Enabled" Content="啟用此樣板過濾" Margin="0,5,0,10" FontWeight="Bold"/>
-                        <Label Content="選擇視圖樣板:" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
-                        <ComboBox x:Name="Tab3_TemplateCombo" DisplayMemberPath="Name" Height="26" Margin="0,0,0,10" BorderBrush="#CCCCCC"/>
-                        <Label Content="保留顯示樓層 (白名單):" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
-                        <ListBox x:Name="Tab3_LevelList" Height="180" BorderBrush="#CCCCCC" Background="White">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="2"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </StackPanel>
-                </TabItem>
-            </TabControl>
+        <TabControl Grid.Row="1" Background="White" BorderBrush="#CCCCCC">
+            <!-- TAB 1 -->
+            <TabItem Header=" 樣板 A ">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Enabled -->
+                        <RowDefinition Height="Auto"/> <!-- Filter Headers -->
+                        <RowDefinition Height="Auto"/> <!-- Filter Combos -->
+                        <RowDefinition Height="Auto"/> <!-- Selection Header -->
+                        <RowDefinition Height="Auto"/> <!-- Main Selection -->
+                        <RowDefinition Height="Auto"/> <!-- List Header -->
+                        <RowDefinition Height="*"/>    <!-- List Box -->
+                    </Grid.RowDefinitions>
+                    
+                    <CheckBox x:Name="Tab1_Enabled" Content="啟用此樣板過濾" Margin="0,0,0,10" FontWeight="Bold"/>
+                    
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <Label Content="領域篩選:" FontSize="10" Foreground="#666666" Padding="0"/>
+                        <Label Content="類型篩選:" Grid.Column="1" FontSize="10" Foreground="#666666" Padding="0,0,0,0" Margin="5,0,0,0"/>
+                    </Grid>
+                    
+                    <Grid Grid.Row="2" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <ComboBox x:Name="Tab1_DisciplineFilter" Height="24" SelectionChanged="OnFilterChanged"/>
+                        <ComboBox x:Name="Tab1_TypeFilter" Grid.Column="1" Height="24" Margin="5,0,0,0" SelectionChanged="OnFilterChanged"/>
+                    </Grid>
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
-                <Button Content="儲存並執行更新" Width="140" Height="32" Click="OnSaveAndApply"
-                        Background="#4CAF50" Foreground="White" FontWeight="Bold"
-                        BorderThickness="0" Cursor="Hand"/>
-                <Button Content="取消" Width="70" Height="32" Margin="8,0,0,0" Click="OnCancel"
-                        BorderBrush="#CCCCCC" Cursor="Hand"/>
-            </StackPanel>
+                    <Label Grid.Row="3" Content="選擇視圖樣板:" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
+                    <ComboBox x:Name="Tab1_TemplateCombo" Grid.Row="4" DisplayMemberPath="Name" Height="26" Margin="0,0,0,10"/>
+                    
+                    <Label Grid.Row="5" Content="保留顯示樓層 (白名單):" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
+                    <ListBox x:Name="Tab1_LevelList" Grid.Row="6" Background="#FAFAFA">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="2"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2 -->
+            <TabItem Header=" 樣板 B ">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="Tab2_Enabled" Content="啟用此樣板過濾" Margin="0,0,0,10" FontWeight="Bold"/>
+                    <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Label Content="領域篩選:" FontSize="10" Foreground="#666666" Padding="0"/><Label Content="類型篩選:" Grid.Column="1" FontSize="10" Foreground="#666666" Padding="0" Margin="5,0,0,0"/></Grid>
+                    <Grid Grid.Row="2" Margin="0,0,0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><ComboBox x:Name="Tab2_DisciplineFilter" Height="24" SelectionChanged="OnFilterChanged"/><ComboBox x:Name="Tab2_TypeFilter" Grid.Column="1" Height="24" Margin="5,0,0,0" SelectionChanged="OnFilterChanged"/></Grid>
+                    <Label Grid.Row="3" Content="選擇視圖樣板:" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/><ComboBox x:Name="Tab2_TemplateCombo" Grid.Row="4" DisplayMemberPath="Name" Height="26" Margin="0,0,0,10"/>
+                    <Label Grid.Row="5" Content="保留顯示樓層 (白名單):" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
+                    <ListBox x:Name="Tab2_LevelList" Grid.Row="6" Background="#FAFAFA"><ListBox.ItemTemplate><DataTemplate><CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="2"/></DataTemplate></ListBox.ItemTemplate></ListBox>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 3 -->
+            <TabItem Header=" 樣板 C ">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="Tab3_Enabled" Content="啟用此樣板過濾" Margin="0,0,0,10" FontWeight="Bold"/>
+                    <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><Label Content="領域篩選:" FontSize="10" Foreground="#666666" Padding="0"/><Label Content="類型篩選:" Grid.Column="1" FontSize="10" Foreground="#666666" Padding="0" Margin="5,0,0,0"/></Grid>
+                    <Grid Grid.Row="2" Margin="0,0,0,10"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><ComboBox x:Name="Tab3_DisciplineFilter" Height="24" SelectionChanged="OnFilterChanged"/><ComboBox x:Name="Tab3_TypeFilter" Grid.Column="1" Height="24" Margin="5,0,0,0" SelectionChanged="OnFilterChanged"/></Grid>
+                    <Label Grid.Row="3" Content="選擇視圖樣板:" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/><ComboBox x:Name="Tab3_TemplateCombo" Grid.Row="4" DisplayMemberPath="Name" Height="26" Margin="0,0,0,10"/>
+                    <Label Grid.Row="5" Content="保留顯示樓層 (白名單):" FontSize="11" Foreground="#666666" Padding="0,0,0,2"/>
+                    <ListBox x:Name="Tab3_LevelList" Grid.Row="6" Background="#FAFAFA"><ListBox.ItemTemplate><DataTemplate><CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="2"/></DataTemplate></ListBox.ItemTemplate></ListBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <Button Content="儲存並執行更新" Width="140" Height="32" Click="OnSaveAndApply" Background="#4CAF50" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand"/>
+            <Button Content="取消" Width="70" Height="32" Margin="8,0,0,0" Click="OnCancel" BorderBrush="#CCCCCC" Cursor="Hand"/>
         </StackPanel>
-    </Border>
+    </Grid>
 </Window>

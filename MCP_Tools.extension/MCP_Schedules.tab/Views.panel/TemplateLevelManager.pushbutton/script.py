@@ -37,31 +37,92 @@ class TemplateLevelManager(forms.WPFWindow):
         self._doc = revit.doc
         self._config_path = os.path.join(os.path.dirname(__file__), "template_config.json")
         
-        # Initialize Data / 初始化數據
-        self.setup_ui()
+        # 1. Collect only valid Graphical View Templates (that can have Levels/Discipline)
+        valid_types = [ViewType.FloorPlan, ViewType.CeilingPlan, ViewType.Elevation, ViewType.Section, ViewType.ThreeD]
+        self._all_templates = [v for v in FilteredElementCollector(self._doc).OfClass(View).ToElements() 
+                               if v.IsTemplate and v.ViewType in valid_types]
+        self._all_templates.sort(key=lambda x: x.Name)
+
+        # 2. Collect unique filter options safely
+        disciplines_set = set()
+        view_types_set = set()
+        for t in self._all_templates:
+            try:
+                disciplines_set.add(str(t.Discipline))
+            except: pass
+            try:
+                view_types_set.add(str(t.ViewType))
+            except: pass
+
+        self._disciplines = sorted(list(disciplines_set))
+        self._view_types = sorted(list(view_types_set))
+
+        # 3. Setup UI and Filter logic
+        self.setup_ui_filters()
         self.load_config()
 
-    def setup_ui(self):
-        # 1. Get View Templates / 獲取視圖樣板
-        all_views = FilteredElementCollector(self._doc).OfClass(View).ToElements()
-        templates = sorted([v for v in all_views if v.IsTemplate], key=lambda x: x.Name)
-        
-        # 2. Get Levels / 獲取樓層
-        levels = FilteredElementCollector(self._doc).OfClass(Level).ToElements()
-        self.level_items = sorted([LevelItem(l) for l in levels], key=lambda x: x.Name)
+    def setup_ui_filters(self):
+        # Filter options
+        filter_data = {
+            "disciplines": ["<全部>"] + self._disciplines,
+            "types": ["<全部>"] + self._view_types
+        }
 
-        # 3. Bind to Tabs / 綁定到各個頁籤
         for i in range(1, 4):
-            combo = getattr(self, "Tab{}_TemplateCombo".format(i))
-            combo.ItemsSource = templates
+            # Populate Filter Combos
+            disc_combo = getattr(self, "Tab{}_DisciplineFilter".format(i))
+            type_combo = getattr(self, "Tab{}_TypeFilter".format(i))
             
-            # Note: ListBox binding is simpler via code here
+            disc_combo.ItemsSource = filter_data["disciplines"]
+            disc_combo.SelectedIndex = 0
+            
+            type_combo.ItemsSource = filter_data["types"]
+            type_combo.SelectedIndex = 0
+
+            # Levels
+            levels = FilteredElementCollector(self._doc).OfClass(Level).ToElements()
+            tab_levels = sorted([LevelItem(l) for l in levels], key=lambda x: x.Name)
             listbox = getattr(self, "Tab{}_LevelList".format(i))
-            # Create unique copies of level items for each tab / 為各頁籤建立獨立的樓層物件複本
-            tab_levels = [LevelItem(l) for l in sorted(levels, key=lambda x: x.Name)]
             listbox.ItemsSource = tab_levels
 
+            # Initial Template Population
+            self.refresh_template_list(i)
+
+    def OnFilterChanged(self, sender, e):
+        # Find which tab triggered this (Name follows "TabX_...")
+        sender_name = sender.Name
+        try:
+            tab_num = int(sender_name[3]) # Extract '1', '2' or '3'
+            self.refresh_template_list(tab_num)
+        except:
+            pass
+
+    def refresh_template_list(self, tab_num):
+        disc_filter = getattr(self, "Tab{}_DisciplineFilter".format(tab_num)).SelectedItem
+        type_filter = getattr(self, "Tab{}_TypeFilter".format(tab_num)).SelectedItem
+        combo = getattr(self, "Tab{}_TemplateCombo".format(tab_num))
+
+        # Filter the master list
+        filtered = self._all_templates
+        if disc_filter and disc_filter != "<全部>":
+            filtered = [t for t in filtered if str(t.Discipline) == disc_filter]
+        if type_filter and type_filter != "<全部>":
+            filtered = [t for t in filtered if str(t.ViewType) == type_filter]
+
+        # Preserve selection if it's already in the filtered results
+        current_sel = combo.SelectedItem
+        combo.ItemsSource = filtered
+        
+        if current_sel:
+            for item in filtered:
+                if item.Id == current_sel.Id:
+                    combo.SelectedItem = item
+                    break
+
     def load_config(self):
+        active_template_id = self._doc.ActiveView.ViewTemplateId
+        active_template = self._doc.GetElement(active_template_id) if active_template_id != ElementId.InvalidElementId else None
+
         if os.path.exists(self._config_path):
             try:
                 with io.open(self._config_path, 'r', encoding='utf-8') as f:
@@ -69,24 +130,63 @@ class TemplateLevelManager(forms.WPFWindow):
                     
                 for i in range(1, 4):
                     tab_data = config.get("tab_{}".format(i))
+                    combo = getattr(self, "Tab{}_TemplateCombo".format(i))
+                    disc_filter_combo = getattr(self, "Tab{}_DisciplineFilter".format(i))
+                    type_filter_combo = getattr(self, "Tab{}_TypeFilter".format(i))
+                    
                     if tab_data:
-                        # Set Enabled
+                        # 1. Restore Filters first
+                        saved_disc = tab_data.get("discipline_filter", "<全部>")
+                        saved_type = tab_data.get("view_type_filter", "<全部>")
+                        
+                        disc_filter_combo.SelectedItem = saved_disc
+                        type_filter_combo.SelectedItem = saved_type
+                        
+                        # 2. Refresh List based on restored filters
+                        self.refresh_template_list(i)
+                        
+                        # 3. Set Enabled
                         getattr(self, "Tab{}_Enabled".format(i)).IsChecked = tab_data.get("enabled", False)
-                        # Set Template
+                        
+                        # 4. Set Template from config
                         template_name = tab_data.get("template_name")
-                        combo = getattr(self, "Tab{}_TemplateCombo".format(i))
-                        for item in combo.ItemsSource:
-                            if item.Name == template_name:
-                                combo.SelectedItem = item
+                        target_template = None
+                        for t in self._all_templates:
+                            if t.Name == template_name:
+                                target_template = t
                                 break
-                        # Set Levels
+                        
+                        if target_template:
+                            # Even if filtered out by current UI state, we ensure it's selectable during load
+                            # (The UI state was just restored above, so it SHOULD be in there, but as safety:)
+                            if target_template not in combo.ItemsSource:
+                                combo.ItemsSource = self._all_templates
+                            combo.SelectedItem = target_template
+                            
+                        # 5. Set Levels from config
                         keep_levels = tab_data.get("keep_levels", [])
                         listbox = getattr(self, "Tab{}_LevelList".format(i))
                         for item in listbox.ItemsSource:
                             if item.Name in keep_levels:
                                 item.IsChecked = True
+                    
+                    # Pre-select Active View Template for Tab 1 if nothing selected yet
+                    # 如果 Tab 1 還沒選樣板，且當前視圖有樣板，則預先導入
+                    if i == 1 and not combo.SelectedItem and active_template:
+                        for item in combo.ItemsSource:
+                            if item.Id == active_template.Id:
+                                combo.SelectedItem = item
+                                break
             except:
                 pass
+        else:
+            # First time running: Pre-select Active View Template for Tab 1
+            if active_template:
+                combo = getattr(self, "Tab1_TemplateCombo")
+                for item in combo.ItemsSource:
+                    if item.Id == active_template.Id:
+                        combo.SelectedItem = item
+                        break
 
     def OnSaveAndApply(self, sender, e):
         config = {}
@@ -99,49 +199,76 @@ class TemplateLevelManager(forms.WPFWindow):
                 listbox = getattr(self, "Tab{}_LevelList".format(i))
                 keep_names = [item.Name for item in listbox.ItemsSource if item.IsChecked]
 
+                # Get Current Filters / 取得當前篩選器值
+                disc_val = getattr(self, "Tab{}_DisciplineFilter".format(i)).SelectedItem
+                type_val = getattr(self, "Tab{}_TypeFilter".format(i)).SelectedItem
+
                 # Save to config dict
                 config["tab_{}".format(i)] = {
                     "enabled": is_enabled,
                     "template_name": template.Name if template else None,
+                    "discipline_filter": disc_val,
+                    "view_type_filter": type_val,
                     "keep_levels": keep_names
                 }
 
                 # Apply to Revit if enabled
                 if is_enabled and template:
-                    self.apply_to_template(template, keep_names)
-                    processed_templates.append(template.Name)
+                    view_count = self.apply_to_template(template, keep_names)
+                    processed_templates.append("{} ({} 張視圖)".format(template.Name, view_count))
 
         # Save config file
         with io.open(self._config_path, 'w', encoding='utf-8') as f:
             f.write(unicode(json.dumps(config, ensure_ascii=False, indent=4)))
 
-        forms.alert("處理完成！\n已更新樣板：\n" + "\n".join(processed_templates), title="完成")
+        if processed_templates:
+            forms.alert("處理完成！\n已更新樣板：\n" + "\n".join(processed_templates), title="完成")
+        else:
+            forms.alert("沒有啟用的樣板需要更新。", title="完成")
         self.Close()
 
     def apply_to_template(self, template, keep_names):
-        # 1. Get visible levels in template (ViewTemplates are Views)
-        # Note: FilteredElementCollector on a template works!
-        visible_level_ids = [l.Id for l in FilteredElementCollector(self._doc, template.Id).OfClass(Level)]
+        """
+        Apply level isolation to all views currently using the selected template.
+        
+        [Why this approach / 為什麼這樣設計]:
+        Revit API does not propagate individual element-level Hide/Unhide set on the
+        View Template itself to child views. Instead, we find all views currently
+        using this template and apply the isolation directly to each view.
+        This mirrors the proven logic of the IsolateLevels button.
+        
+        Revit API 的元素級別隱藏設定在「視圖樣板」上，不會自動同步到使用該樣板的子視圖。
+        因此改為直接對所有使用此樣板的視圖執行。
+        """
         all_levels = FilteredElementCollector(self._doc).OfClass(Level).ToElements()
-
+        
         ids_to_hide = List[ElementId]()
         ids_to_unhide = List[ElementId]()
-
+        
         for lvl in all_levels:
-            name = lvl.Name
-            is_visible = lvl.Id in visible_level_ids
-            
-            if name in keep_names:
-                if not is_visible:
-                    ids_to_unhide.Add(lvl.Id)
+            if lvl.Name in keep_names:
+                ids_to_unhide.Add(lvl.Id)
             else:
-                if is_visible:
-                    ids_to_hide.Add(lvl.Id)
-
-        if ids_to_hide.Count > 0:
-            template.HideElements(ids_to_hide)
-        if ids_to_unhide.Count > 0:
-            template.UnhideElements(ids_to_unhide)
+                ids_to_hide.Add(lvl.Id)
+        
+        # Find all views using this template / 找出所有套用此樣板的視圖
+        all_views = FilteredElementCollector(self._doc).OfClass(View).ToElements()
+        target_views = [v for v in all_views 
+                        if not v.IsTemplate 
+                        and v.ViewTemplateId == template.Id]
+        
+        count = 0
+        for view in target_views:
+            try:
+                if ids_to_unhide.Count > 0:
+                    view.UnhideElements(ids_to_unhide)
+                if ids_to_hide.Count > 0:
+                    view.HideElements(ids_to_hide)
+                count += 1
+            except:
+                pass  # Skip views that can't be modified
+        
+        return count  # Return number of views updated for feedback
 
     def OnCancel(self, sender, e):
         self.Close()

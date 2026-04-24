@@ -1,0 +1,31 @@
+{
+    "tab_3": {
+        "enabled": false,
+        "template_name": null,
+        "keep_levels": [],
+        "discipline_filter": "<全部>",
+        "view_type_filter": "<全部>"
+    },
+    "tab_2": {
+        "enabled": true,
+        "template_name": null,
+        "keep_levels": [
+            "L4",
+            "R2"
+        ],
+        "discipline_filter": "<全部>",
+        "view_type_filter": "<全部>"
+    },
+    "tab_1": {
+        "enabled": true,
+        "template_name": "Mechanical Elevation",
+        "keep_levels": [
+            "L1 - Block 35",
+            "L1 - Block 37",
+            "L1 - Block 43",
+            "R2"
+        ],
+        "discipline_filter": "<全部>",
+        "view_type_filter": "<全部>"
+    }
+}
