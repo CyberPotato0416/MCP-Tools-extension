@@ -49,18 +49,6 @@ def is_primary_view(view):
     return True
 
 def main():
-    # 0. 功能前導說明 / Guided Intro
-    forms.alert(
-        "【視圖矩陣分割器】\n\n"
-        "此工具將引導您執行以下操作：\n"
-        "1. 選擇母視圖\n"
-        "2. 選擇樣板（將會自動套用至所有生成的分割視圖）\n"
-        "3. 設定分割範圍（網格座標）\n"
-        "4. 自動建立圖紙與排版\n\n"
-        "若準備好了請點選 OK 開始。",
-        title="DependentSplit 使用引導"
-    )
-
     # 1. 視圖多選 (加入預載邏輯)
     active_view = doc.ActiveView
     all_views_col = FilteredElementCollector(doc).OfClass(ViewPlan).WhereElementIsNotElementType()
