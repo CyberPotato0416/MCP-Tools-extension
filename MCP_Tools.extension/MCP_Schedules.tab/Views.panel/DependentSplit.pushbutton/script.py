@@ -55,33 +55,38 @@ def main():
     view_list = [v for v in all_views_col if not v.IsTemplate and is_primary_view(v)]
     view_list.sort(key=lambda x: x.Name)
     
-    # 建立彈框實例以支援預先勾選
-    view_form = forms.SelectFromList(view_list, name_attr='Name', title='[1/5] 勾選母視圖', multiselect=True)
+    # 1. 視圖多選 (穩定版：將 Active View 排序至最前)
+    active_view = doc.ActiveView
+    all_views_col = FilteredElementCollector(doc).OfClass(ViewPlan).WhereElementIsNotElementType()
+    view_list = [v for v in all_views_col if not v.IsTemplate and is_primary_view(v)]
     
-    # 如果當前視圖在清單內，自動勾選
-    if active_view in view_list:
-        view_form.checked_elements = [active_view]
-    
-    if not view_form.show(): return
-    selected_views = view_form.selected_elements
+    # 排序邏輯：讓 ActiveView 出現在清單最上面，方便選取
+    view_list.sort(key=lambda x: (x.Id != active_view.Id if active_view else True, x.Name))
 
-    # 2. 視圖樣板選擇 (加入預載邏輯)
+    selected_views = forms.SelectFromList.show(
+        view_list, 
+        name_attr='Name', 
+        title='[1/5] 勾選母視圖 (已自動將當前視圖排至首位)', 
+        multiselect=True
+    )
+    if not selected_views: return
+
+    # 2. 視圖樣板選擇 (穩定版)
     all_templates = FilteredElementCollector(doc).OfClass(ViewPlan).ToElements()
     template_list = [t for t in all_templates if t.IsTemplate]
-    template_list.sort(key=lambda x: x.Name)
     
     # 偵測樣板預選：取第一個母視圖的樣板
     active_template_id = selected_views[0].ViewTemplateId if selected_views else ElementId.InvalidElementId
     active_template = doc.GetElement(active_template_id) if active_template_id != ElementId.InvalidElementId else None
+    
+    # 排序邏輯：讓建議的樣板排在最上面
+    template_list.sort(key=lambda x: (x.Id != active_template_id, x.Name))
 
-    # 建立彈框實例
-    temp_form = forms.SelectFromList(template_list, name_attr='Name', title='[2/5] 選擇視圖樣板 (可點取消視同不套用)')
-    
-    # 如果母視圖有樣板，自動預選
-    if active_template:
-        temp_form.selected_elements = [active_template]
-    
-    selected_template = temp_form.show()
+    selected_template = forms.SelectFromList.show(
+        template_list, 
+        name_attr='Name', 
+        title='[2/5] 選擇視圖樣板 (建議樣板已排至首位)'
+    )
     template_id = selected_template.Id if selected_template else ElementId.InvalidElementId
 
     # 3. 各別參數輸入 (穩定版)
