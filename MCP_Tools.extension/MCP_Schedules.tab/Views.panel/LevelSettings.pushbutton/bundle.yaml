@@ -1,2 +1,2 @@
-title: 設定樓層
-tooltip: 設定要保持顯示的樓層白名單
+﻿title: LevelSettings
+doc: Configure the whitelist of levels for the IsolateLevels tool.

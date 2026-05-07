@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-IsolateLevels (隔離樓層線按鈕)
-Author: Jerry / Antigravity
+__title__  = "IsolateLevels"
+__author__ = "Jerry / Antigravity"
+__doc__    = "Show or hide level lines in the current view based on a custom whitelist. Complements view templates."
 
-[Design Intent / 開發動機]:
-The executor of the "Dynamic Level Whitelist" logic. It bridges the gap in 
-Revit View Templates by providing per-view level isolation based on a 
-user-defined configuration. Essential for complex multi-level projects.
-
-「動態樓層白名單」邏輯的執行器。透過讀取使用者定義的設定檔，實現視圖層級的精確樓層隔離，
-解決了原生視圖樣板無法針對特定樓層進行過濾的痛點。此方式具備高度靈活性，
-產生的結果與在單張視圖手動進行 VG 調整一致，但大幅節省反覆操作的時間成本。
-對於大型複雜專案至關重要。
-"""
 from Autodesk.Revit.DB import *
 from pyrevit import revit, forms
 from System.Collections.Generic import List

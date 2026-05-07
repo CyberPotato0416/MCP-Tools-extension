@@ -1,5 +1,2 @@
-title: 隔離F2樓層線
-icon: icon.png
-tooltip: |
-  在目前視圖中只顯示 SFAB_L05 TOPPING
-  其他樓層線將被隱藏
+﻿title: "KeepF2Levels"
+

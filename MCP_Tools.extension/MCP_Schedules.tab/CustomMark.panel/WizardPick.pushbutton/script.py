@@ -1,23 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Wizard Pick (標註精靈)
-Author: MCP / Jerry
-Version: v1.0
+__title__  = "WizardPick"
+__author__ = "Jerry / Antigravity"
+__doc__    = "Structured tagging for complex MEP systems using the MCP Protocol (System;Bldg.Floor.Zone-Seq)."
 
-Description / 功能簡介:
-Complex structured tagging system for MEP elements. Automatically generates tags following a specific protocol.
-針對機電元件的高級結構化標註系統，依照預設協議自動生成複雜編碼。
-
-Key Features / 關鍵功能:
-- Protocol-driven Tagging (基於協議的自動編碼)
-- Contextual Logic (Building.Floor.Zone) (包含棟號、樓層與區域資訊)
-- Multi-Parameter Writing (支援寫入不同的專案參數)
-
-How to Use / 使用說明:
-1. Configure protocol in 'Wizard Settings' (先於『精靈設定』配置編碼規則)
-2. Run 'Wizard Pick' and click elements (執行『標註精靈』並點選元件)
-3. The sequences increments automatically (序號將依跳步值自動遞增)
-"""
 
 import clr
 import ctypes

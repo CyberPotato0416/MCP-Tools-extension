@@ -1,5 +1,2 @@
-title: 隔離C2樓層線
-icon: icon.png
-tooltip: |
-  在目前視圖中只顯示 C2_L10、C2_L20
-  其他樓層線將被隱藏
+﻿title: "KeepC2Levels"
+

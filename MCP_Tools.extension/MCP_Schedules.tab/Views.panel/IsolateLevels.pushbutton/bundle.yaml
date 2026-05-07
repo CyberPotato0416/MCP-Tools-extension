@@ -1,2 +1,2 @@
-title: 隔離樓層線
-tooltip: 依據設定檔自動隱藏/顯示樓層線
+﻿title: IsolateLevels
+doc: Show or hide level lines in views based on your custom whitelist.

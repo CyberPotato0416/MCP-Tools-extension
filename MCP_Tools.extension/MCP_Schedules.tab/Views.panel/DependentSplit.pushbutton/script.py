@@ -1,16 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-DependentSplit (視圖矩陣分割器)
-Author: Jerry / Antigravity
-Version: v1.1 (Fixed Imports & Improved UX)
+__title__  = "DependentSplit"
+__author__ = "Jerry / Antigravity"
+__doc__    = "Split large floor plans into quadrant-based dependent views with automatic crop box alignment."
 
-Description / 功能簡介:
-依據指定網格邊界（如 1~5 軸、A~E 軸）自動將大型母視圖分割成矩陣狀的從屬視圖 (Dependent Views)。
-每個分割出來的小視圖會自動依序：
-1. 套用選定的視圖樣板。
-2. 建立專屬的新圖紙 (Sheet)。
-3. 將視圖放置在圖紙中心。
-"""
 
 import os
 from Autodesk.Revit.DB import *
@@ -21,10 +13,10 @@ from pyrevit import revit, forms
 doc = revit.doc
 
 def get_sorted_grids():
-    """ 
-    Grab all grids and classify them into X and Y groups based on geometry, then sort them by coordinate.
-    抓取所有網格，並依幾何幾何座標分類為 X/Y 組，隨後進行排序。
     """
+DependentSplit - Quadrant-based view splitting for large floor plans.
+Automatically creates and crops dependent views using grid coordinates.
+"""
     all_grids = DB.FilteredElementCollector(doc).OfClass(DB.Grid).ToElements()
     x_grids, y_grids = [], []
     for g in all_grids:
@@ -43,7 +35,10 @@ def get_sorted_grids():
     return x_grids, y_grids
 
 def is_primary_view(view):
-    """ Check if the view is a primary view (not dependent) / 檢查視圖是否為母視圖（非從屬視圖） """
+    """
+DependentSplit - Quadrant-based view splitting for large floor plans.
+Automatically creates and crops dependent views using grid coordinates.
+"""
     if hasattr(view, "GetPrimaryViewId"):
         return view.GetPrimaryViewId() == DB.ElementId.InvalidElementId
     return True

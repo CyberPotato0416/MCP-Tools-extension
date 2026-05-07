@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-Wizard Settings (精靈標註設定)
-Author: MCP / Jerry
-Version: v1.0
+__title__  = "WizardSettings"
+__author__ = "Jerry / Antigravity"
+__doc__    = "Configure structured marking protocols, prefixes, and encoding fields for WizardPick."
 
-Description / 功能簡介:
-Configuration UI for the 'Wizard Pick' tool. Define complex protocol parts and target project parameters.
-『標註精靈』工具的配置介面。可設定複雜編碼協議的各個組成部分及其目標專案參數。
-"""
 
 import os
 from pyrevit import forms, script

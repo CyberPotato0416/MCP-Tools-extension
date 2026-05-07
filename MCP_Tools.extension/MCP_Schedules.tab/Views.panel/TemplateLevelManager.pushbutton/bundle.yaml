@@ -1,2 +1,2 @@
-title: 樣板樓層管理
-tooltip: 多頁籤式視圖樣板樓層白名單管理器
+﻿title: TemplateLevelManager
+doc: Batch manage level visibility and filters across multiple view templates.

@@ -1,9 +1,9 @@
 {
     "pipe_types": [
         "PVC - DWV",
-        null,
-        null,
-        null,
-        null
+        "PVC - DWV",
+        "PVC - DWV",
+        "PVC - DWV",
+        "PVC - DWV"
     ]
 }

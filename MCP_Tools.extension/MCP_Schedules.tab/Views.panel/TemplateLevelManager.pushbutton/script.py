@@ -1,15 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
-TemplateLevelManager (樣板樓層管理)
-Author: Jerry / Antigravity
+__title__  = "TemplateLevelManager"
+__author__ = "Jerry / Antigravity"
+__doc__    = "Batch manage level visibility across multiple view templates with domain/type filtering and JSON state memory."
 
-[Design Intent / 開發動機]:
-An advanced multi-tab management tool for Revit View Templates. 
-Allows defining custom level whitelists per template. 
-Highly flexible and bridges the gap in native View Template functionality.
-此為高級多頁籤管理工具，用於設定各視圖樣板的專屬樓層白名單。
-實現樣板層級的動態過濾，提供高度靈活性。
-"""
 
 import os
 import json
