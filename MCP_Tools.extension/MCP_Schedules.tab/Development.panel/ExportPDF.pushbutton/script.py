@@ -38,7 +38,7 @@ def export_active_sheet_to_pdf():
     options.RasterQuality = DB.RasterQualityType.High
     options.ExportQuality = DB.PDFExportQualityType.DPI300
     options.HideCropBoundaries = True
-    options.HideRefPlanes = True # 修正為正確的 API 名稱
+    options.HideReferencePlane = True # 修正為正確的 API 名稱 (單數)
     options.HideUnreferencedViewTags = True
     
     # 4. 執行導出 (背景執行，不需切換視圖)
