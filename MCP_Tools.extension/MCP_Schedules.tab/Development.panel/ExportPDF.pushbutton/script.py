@@ -38,8 +38,10 @@ def export_active_sheet_to_pdf():
     options.RasterQuality = DB.RasterQualityType.High
     options.ExportQuality = DB.PDFExportQualityType.DPI300
     options.HideCropBoundaries = True
-    options.HideReferencePlane = True # 修正為正確的 API 名稱 (單數)
+    options.HideReferencePlane = True
+    options.HideScopeBoxes = True # 隱藏範圍框
     options.HideUnreferencedViewTags = True
+    options.ViewLinksInBlue = False # 關鍵！取消藍色超連結框
     
     # 4. 執行導出 (背景執行，不需切換視圖)
     try:
