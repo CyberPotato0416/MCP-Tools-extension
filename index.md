@@ -55,5 +55,17 @@
 
 
 ---
-**最新維護日期**：2026-04-24 
-**開發指南**：請參閱內部的 `AGENTS.md` 以進行 AI 協作開發。
+## 📚 5. Research & Learning (文獻與研究)
+| 文獻名稱 | 類型 | 摘要 |
+| :--- | :--- | :--- |
+| **[BIM to EDA Report](docs/research/bim-eda-literature-search.md)** | 研究報告 | 營建自動化與電子設計自動化 (EDA) 的範式轉移深度研究。 |
+| **[BIM ↔︎ EDA Literature Index](docs/research/bim-eda-literature-index.md)** | 文獻索引 | 篩選 15 篇近三年（2022-2024）關於 BIM ↔︎ EDA 與 MEP 數據控管的熱門學術與產業文獻。 |
+| **[EDA Concept Handscript](docs/research/eda-concept-handscript.md)** | 數位手稿 | 關於設計流走向、約束驅動設計與同步工程於 AEC 產業之應用的核心思維。 |
+| **[Fab DRC & Precision Alignment](docs/research/fab-drc-precision-alignment.md)** | 專題報告 | 針對電子廠（Mega-Fab）營建設計初期（0%-20%）DRC 與製造精度銜接的實務檢討與技術路徑。 |
+| **[MEP Ecosystem Review](docs/research/mep-ecosystem-review.md)** | 生態系研究 | 剖析全球頂尖開發者（如 Cyril Waechter, Gui Talarico）在幾何計算、標註與出圖的技術邏輯。 |
+| **[Release-as-Knowledge (R2K)](docs/research/r2k-software-release-knowledge.md)** | 文獻回顧 | 借鑒 iThome 鐵人賽研究，探討軟體發布如何作為「知識傳遞」的媒介，解決隱性知識流失問題。 |
+
+---
+**最新維護日期**：2026-05-17
+**發布知識台帳**：請參閱 [RELEASE_KNOWLEDGE.md](RELEASE_KNOWLEDGE.md) 以瞭解各版本的研發背景與設計思維。
+**開發指南**：請參閱內部的 [AGENTS.md](AGENTS.md) 以進行 AI 協作開發。

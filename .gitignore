@@ -1,0 +1,32 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+ENV_DIR/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Revit and pyRevit temporary/backup files
+*.tmp
+*.backup.*
+*.00??.rvt
+*.00??.rfa
+*.log
+
+# OS-specific files
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# IDE and Editor configurations
+.idea/
+.vscode/
+*.suo
+*.user
+*.sln
+*.docstate

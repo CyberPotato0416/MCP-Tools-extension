@@ -25,7 +25,7 @@
 
 在進行 MEP 幾何運算、出圖自動化或工具優化前，Agent **務必先行閱讀** 以下研究報告：
 
-*   **[MEP 生態系與自動化研究報告](file:///H:/0_REVIT%20MCP/REVIT_MCP_study-main/docs/research/mep-ecosystem-review.md)**：
+*   **[MEP 生態系與自動化研究報告](docs/research/mep-ecosystem-review.md)**：
     *   介紹了全球頂尖開發者（如 Cyril Waechter, Gui Talarico）的技術邏輯。
     *   包含向量數學在管線幾何、標註對齊以及視圖批次產生的實務應用。
     *   為 `MCP-Tools` 提供了功能優化與結構設計的藍圖。
